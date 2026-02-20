@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PptxGenJS Table Builder</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="container">
+      <nav>
+        <ul>
+          <li><strong>Advanced Table Builder</strong></li>
+        </ul>
+        <ul>
+          <li><a href="index.html">Back to gallery</a></li>
+        </ul>
+      </nav>
+
+      <p>
+        Upload CSV or JSON data, configure columns and styling, then export one or
+        many PowerPoint files with progress feedback.
+      </p>
+
+      <article>
+        <h2>1) Upload data</h2>
+        <label for="data-file">CSV or JSON file</label>
+        <input id="data-file" type="file" accept=".csv,.json,application/json,text/csv" />
+        <small>JSON can be an array of objects, an object with a <code>rows</code> array, or an array-of-arrays.</small>
+      </article>
+
+      <article>
+        <h2>2) Configure columns</h2>
+        <p>Reorder with drag-and-drop, include/exclude fields, and control widths/alignment.</p>
+        <div class="action-row">
+          <button id="select-all-columns" class="secondary" disabled>Select all columns</button>
+          <button id="deselect-all-columns" class="secondary" disabled>Deselect all columns</button>
+        </div>
+        <ul id="column-config" class="column-list"></ul>
+      </article>
+
+      <article>
+        <h2>3) Table options</h2>
+        <div class="options-row">
+          <label>Slide title<input id="slide-title" value="Uploaded Data Table" /></label>
+          <label>File name prefix<input id="file-name" value="pptxgenjs-uploaded-table" /></label>
+          <label>Rows per slide<input id="rows-per-slide" type="number" min="5" max="60" step="1" value="20" /></label>
+          <label>Preview slide count<input id="preview-slide-count" type="number" min="1" max="20" step="1" value="2" /></label>
+
+          <label>Header fill color (hex)<input id="header-fill" value="1D4ED8" /></label>
+          <label>Header text color (hex)<input id="header-text" value="FFFFFF" /></label>
+          <label>Body fill color (hex)<input id="body-fill" value="F8FAFC" /></label>
+          <label>Body text color (hex)<input id="body-text" value="0F172A" /></label>
+          <label>Border color (hex)<input id="border-color" value="CBD5E1" /></label>
+
+          <label>Header font size<input id="header-font-size" type="number" min="8" max="28" step="1" value="13" /></label>
+          <label>Body font size<input id="body-font-size" type="number" min="8" max="28" step="1" value="12" /></label>
+          <label>Header font weight
+            <select id="header-font-weight">
+              <option value="normal">normal</option>
+              <option value="bold" selected>bold</option>
+            </select>
+          </label>
+          <label>Body font weight
+            <select id="body-font-weight">
+              <option value="normal" selected>normal</option>
+              <option value="bold">bold</option>
+            </select>
+          </label>
+          <label>Body italic
+            <select id="body-italic">
+              <option value="false" selected>false</option>
+              <option value="true">true</option>
+            </select>
+          </label>
+
+          <label>Row height (in)<input id="row-height" type="number" min="0.2" max="2" step="0.05" value="0.45" /></label>
+          <label>Cell margin (in)<input id="cell-margin" type="number" min="0" max="0.3" step="0.01" value="0.04" /></label>
+          <label>Vertical align
+            <select id="valign">
+              <option value="top">top</option>
+              <option value="mid" selected>mid</option>
+              <option value="bot">bot</option>
+            </select>
+          </label>
+          <label>Auto fit
+            <select id="autofit">
+              <option value="false" selected>false</option>
+              <option value="true">true</option>
+            </select>
+          </label>
+          <label>Include slide notes
+            <select id="include-notes">
+              <option value="false" selected>false</option>
+              <option value="true">true</option>
+            </select>
+          </label>
+
+          <label>Split large export
+            <select id="split-export">
+              <option value="false" selected>false</option>
+              <option value="true">true</option>
+            </select>
+          </label>
+          <label>Max estimated file size (MB)
+            <input id="max-file-size-mb" type="number" min="1" max="100" step="1" value="8" />
+          </label>
+        </div>
+      </article>
+
+      <div class="action-row">
+        <button id="generate-preview" disabled class="secondary">Generate preview (first X slides)</button>
+        <button id="generate-table" disabled>Generate full export</button>
+      </div>
+
+      <div class="progress-wrap" aria-live="polite">
+        <progress id="generation-progress" value="0" max="100"></progress>
+        <small id="progress-label">Idle</small>
+      </div>
+
+      <small id="table-status" role="status" aria-live="polite"></small>
+
+      <article>
+        <h2>Data preview</h2>
+        <small>Preview styling updates as you change table options.</small>
+        <figure class="overflow-auto">
+          <table id="preview-table">
+            <thead id="preview-head"></thead>
+            <tbody id="preview-body"></tbody>
+          </table>
+        </figure>
+      </article>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
+    <script src="table-builder.js"></script>
+  </body>
+</html>

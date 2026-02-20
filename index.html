@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PptxGenJS Demo Gallery</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="container">
+      <header>
+        <h1>PptxGenJS Demo Gallery</h1>
+        <p>
+          A simple GitHub Pages-ready site showing different ways
+          <code>pptxgenjs</code> can generate PowerPoint presentations directly
+          in the browser.
+        </p>
+      </header>
+
+      <section>
+        <article>
+          <h2>Generate complete demo deck</h2>
+          <p>
+            Builds one presentation with title slides, text formatting, images,
+            tables, charts, speaker notes, and sectioned content.
+          </p>
+          <button id="generate-all">Generate full showcase</button>
+        </article>
+      </section>
+
+      <section>
+        <h2>Try focused examples</h2>
+        <p>Each button exports a smaller presentation focused on one feature.</p>
+        <div class="grid">
+          <article>
+            <h3>Text & Layout</h3>
+            <button data-demo="text">Generate text demo</button>
+          </article>
+          <article>
+            <h3>Images & Shapes</h3>
+            <button data-demo="media">Generate media demo</button>
+          </article>
+          <article>
+            <h3>Tables</h3>
+            <button data-demo="table">Generate table demo</button>
+          </article>
+          <article>
+            <h3>Charts</h3>
+            <button data-demo="chart">Generate chart demo</button>
+          </article>
+          <article>
+            <h3>Master Slide</h3>
+            <button data-demo="master">Generate master demo</button>
+          </article>
+          <article>
+            <h3>Speaker Notes</h3>
+            <button data-demo="notes">Generate notes demo</button>
+          </article>
+        </div>
+      </section>
+
+      <section>
+        <article>
+          <h2>How this works</h2>
+          <ul>
+            <li>Uses vanilla HTML, CSS, and JavaScript.</li>
+            <li>Loads PptxGenJS from a CDN.</li>
+            <li>Works as a static site (ideal for GitHub Pages).</li>
+          </ul>
+          <small id="status" role="status" aria-live="polite"></small>
+        </article>
+      </section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>

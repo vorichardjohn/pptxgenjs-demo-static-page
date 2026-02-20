@@ -40,6 +40,11 @@ header p {
   cursor: move;
 }
 
+.overflow-auto {
+  overflow-x: auto;
+}
+
+
 .include-toggle {
   display: inline-flex;
   align-items: center;

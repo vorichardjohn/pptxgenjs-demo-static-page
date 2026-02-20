@@ -1,0 +1,19 @@
+:root {
+  --pico-font-size: 100%;
+}
+
+header p {
+  max-width: 70ch;
+}
+
+.grid article {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+#status {
+  display: block;
+  margin-top: 1rem;
+  font-weight: 600;
+}

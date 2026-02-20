@@ -53,6 +53,15 @@ function toNumber(value, fallback) {
   return Number.isFinite(num) ? num : fallback;
 }
 
+function toPositiveWholeNumber(value, fallback) {
+  const normalized = String(value).trim();
+  if (!/^\d+$/.test(normalized)) {
+    return fallback;
+  }
+  const num = Number(normalized);
+  return Number.isInteger(num) && num > 0 ? num : fallback;
+}
+
 function parseCsv(text) {
   const lines = text
     .split(/\r?\n/)
@@ -135,6 +144,7 @@ function getOptions() {
     title: document.getElementById("slide-title").value.trim() || "Uploaded Data Table",
     filePrefix: document.getElementById("file-name").value.trim() || "pptxgenjs-uploaded-table",
     rowsPerSlide: Math.max(1, toNumber(document.getElementById("rows-per-slide").value, 20)),
+    previewSlideCount: toPositiveWholeNumber(document.getElementById("preview-slide-count").value, 2),
     previewSlideCount: Math.max(1, toNumber(document.getElementById("preview-slide-count").value, 2)),
     headerFill: sanitizeHex(document.getElementById("header-fill").value),
     headerText: sanitizeHex(document.getElementById("header-text").value),
@@ -312,6 +322,7 @@ function initializeColumns(names) {
 
   generateButton.disabled = false;
   previewButton.disabled = false;
+  setColumnBulkLinksEnabled(true);
   selectAllButton.disabled = false;
   deselectAllButton.disabled = false;
 }
@@ -338,6 +349,7 @@ async function handleFileUpload() {
     renderPreview();
     generateButton.disabled = true;
     previewButton.disabled = true;
+    setColumnBulkLinksEnabled(false);
     selectAllButton.disabled = true;
     deselectAllButton.disabled = true;
     setStatus(error.message || "Failed to parse file.", true);
@@ -390,6 +402,14 @@ function updateProgress(value, label, animated = false) {
   progressEl.value = Math.max(0, Math.min(100, value));
   progressEl.classList.toggle("progress-animated", animated);
   progressLabelEl.textContent = label;
+}
+
+function setColumnBulkLinksEnabled(enabled) {
+  const links = [selectAllButton, deselectAllButton];
+  links.forEach((link) => {
+    link.setAttribute("aria-disabled", String(!enabled));
+    link.classList.toggle("disabled-link", !enabled);
+  });
 }
 
 async function generateDeckFile({ fileName, title, activeColumns, slideRowChunks, options, deckIndex, deckCount }) {
@@ -509,6 +529,11 @@ async function generateTableDeck({ previewOnly }) {
 
 fileInput.addEventListener("change", handleFileUpload);
 
+selectAllButton.addEventListener("click", (event) => {
+  event.preventDefault();
+  if (selectAllButton.getAttribute("aria-disabled") === "true") {
+    return;
+  }
 selectAllButton.addEventListener("click", () => {
   columns.forEach((column) => {
     column.included = true;
@@ -517,6 +542,11 @@ selectAllButton.addEventListener("click", () => {
   renderPreview();
 });
 
+deselectAllButton.addEventListener("click", (event) => {
+  event.preventDefault();
+  if (deselectAllButton.getAttribute("aria-disabled") === "true") {
+    return;
+  }
 deselectAllButton.addEventListener("click", () => {
   columns.forEach((column) => {
     column.included = false;
@@ -534,6 +564,14 @@ optionIds.forEach((id) => {
 previewButton.addEventListener("click", async () => {
   if (!rows.length || !columns.length) {
     setStatus("Upload a valid file first.", true);
+    return;
+  }
+
+  const previewInput = document.getElementById("preview-slide-count");
+  const previewSlideCount = toPositiveWholeNumber(previewInput.value, Number.NaN);
+  if (!Number.isFinite(previewSlideCount)) {
+    setStatus("Preview slide count must be a whole positive number.", true);
+    previewInput.focus();
     return;
   }
 
@@ -569,4 +607,5 @@ generateButton.addEventListener("click", async () => {
   }
 });
 
+setColumnBulkLinksEnabled(false);
 updateProgress(0, "Idle", false);

@@ -40,6 +40,39 @@ header p {
   cursor: move;
 }
 
+.include-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0;
+  font-size: 0.85rem;
+}
+
+
+.section-heading-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.75rem;
+}
+
+.column-links {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  white-space: nowrap;
+}
+
+.column-links a {
+  font-size: 0.85rem;
+}
+
+.disabled-link {
+  pointer-events: none;
+  opacity: 0.5;
+  text-decoration: none;
+}
+
 .overflow-auto {
   overflow-x: auto;
 }
@@ -114,5 +147,9 @@ header p {
 @media (max-width: 760px) {
   .column-item {
     grid-template-columns: 1fr;
+  }
+
+  .section-heading-row {
+    flex-wrap: wrap;
   }
 }

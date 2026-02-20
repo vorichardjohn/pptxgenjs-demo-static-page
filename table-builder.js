@@ -96,15 +96,20 @@ function parseJson(text) {
   };
 }
 
+function getIncludedColumns() {
+  return columns.filter((column) => column.included);
+}
+
 function renderPreview() {
   previewHeadEl.innerHTML = "";
   previewBodyEl.innerHTML = "";
 
-  if (!columns.length || !rows.length) {
+  const activeColumns = getIncludedColumns();
+  if (!activeColumns.length || !rows.length) {
     return;
   }
 
-  const orderedCols = columns.map((col) => col.name);
+  const orderedCols = activeColumns.map((col) => col.name);
 
   const headRow = document.createElement("tr");
   orderedCols.forEach((name) => {
@@ -168,6 +173,20 @@ function renderColumnConfig() {
     const name = document.createElement("strong");
     name.textContent = column.name;
 
+    const includeLabel = document.createElement("label");
+    includeLabel.className = "include-toggle";
+    includeLabel.textContent = "Include";
+
+    const includeInput = document.createElement("input");
+    includeInput.type = "checkbox";
+    includeInput.checked = column.included;
+    includeInput.setAttribute("aria-label", `Include ${column.name}`);
+    includeInput.addEventListener("change", () => {
+      column.included = includeInput.checked;
+      renderPreview();
+    });
+    includeLabel.prepend(includeInput);
+
     const widthInput = document.createElement("input");
     widthInput.type = "number";
     widthInput.min = "0.5";
@@ -194,7 +213,7 @@ function renderColumnConfig() {
       renderPreview();
     });
 
-    item.append(name, widthInput, alignSelect);
+    item.append(name, includeLabel, widthInput, alignSelect);
     columnConfigEl.appendChild(item);
   });
 }
@@ -202,6 +221,7 @@ function renderColumnConfig() {
 function initializeColumns(names) {
   columns = names.map((name) => ({
     name,
+    included: true,
     width: 13.0 / Math.max(names.length, 1),
     align: "left",
   }));
@@ -235,11 +255,11 @@ async function handleFileUpload() {
   }
 }
 
-function buildTableRows() {
+function buildTableRows(activeColumns) {
   const headerFill = sanitizeHex(document.getElementById("header-fill").value);
   const headerText = sanitizeHex(document.getElementById("header-text").value);
 
-  const header = columns.map((column) => ({
+  const header = activeColumns.map((column) => ({
     text: column.name,
     options: {
       bold: true,
@@ -250,7 +270,7 @@ function buildTableRows() {
   }));
 
   const body = rows.map((row) =>
-    columns.map((column) => ({
+    activeColumns.map((column) => ({
       text: String(row[column.name] ?? ""),
       options: {
         align: column.align,
@@ -262,6 +282,11 @@ function buildTableRows() {
 }
 
 async function generateTableDeck() {
+  const activeColumns = getIncludedColumns();
+  if (!activeColumns.length) {
+    throw new Error("Select at least one column to include.");
+  }
+
   const pptx = new PptxGenJS();
   pptx.layout = "LAYOUT_WIDE";
   pptx.author = "PptxGenJS Table Builder";
@@ -290,8 +315,8 @@ async function generateTableDeck() {
     fontSize: 20,
   });
 
-  const tableRows = buildTableRows();
-  const columnWidths = columns.map((column) => toNumber(column.width, 1.2));
+  const tableRows = buildTableRows(activeColumns);
+  const columnWidths = activeColumns.map((column) => toNumber(column.width, 1.2));
 
   slide.addTable(tableRows, {
     x: 0.5,
@@ -312,7 +337,7 @@ async function generateTableDeck() {
     slide.addNotes(`
 [Notes]
 - Generated from uploaded data.
-- Column order and widths were customized in the table builder.
+- Column order, inclusion, and widths were customized in the table builder.
 [/Notes]
 `);
   }
@@ -334,6 +359,6 @@ generateButton.addEventListener("click", async () => {
     setStatus("Download started.");
   } catch (error) {
     console.error(error);
-    setStatus("Failed to generate presentation.", true);
+    setStatus(error.message || "Failed to generate presentation.", true);
   }
 });

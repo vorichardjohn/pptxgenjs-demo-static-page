@@ -145,6 +145,7 @@ function getOptions() {
     filePrefix: document.getElementById("file-name").value.trim() || "pptxgenjs-uploaded-table",
     rowsPerSlide: Math.max(1, toNumber(document.getElementById("rows-per-slide").value, 20)),
     previewSlideCount: toPositiveWholeNumber(document.getElementById("preview-slide-count").value, 2),
+    previewSlideCount: Math.max(1, toNumber(document.getElementById("preview-slide-count").value, 2)),
     headerFill: sanitizeHex(document.getElementById("header-fill").value),
     headerText: sanitizeHex(document.getElementById("header-text").value),
     bodyFill: sanitizeHex(document.getElementById("body-fill").value),
@@ -322,6 +323,8 @@ function initializeColumns(names) {
   generateButton.disabled = false;
   previewButton.disabled = false;
   setColumnBulkLinksEnabled(true);
+  selectAllButton.disabled = false;
+  deselectAllButton.disabled = false;
 }
 
 async function handleFileUpload() {
@@ -347,6 +350,8 @@ async function handleFileUpload() {
     generateButton.disabled = true;
     previewButton.disabled = true;
     setColumnBulkLinksEnabled(false);
+    selectAllButton.disabled = true;
+    deselectAllButton.disabled = true;
     setStatus(error.message || "Failed to parse file.", true);
   }
 }
@@ -529,6 +534,7 @@ selectAllButton.addEventListener("click", (event) => {
   if (selectAllButton.getAttribute("aria-disabled") === "true") {
     return;
   }
+selectAllButton.addEventListener("click", () => {
   columns.forEach((column) => {
     column.included = true;
   });
@@ -541,6 +547,7 @@ deselectAllButton.addEventListener("click", (event) => {
   if (deselectAllButton.getAttribute("aria-disabled") === "true") {
     return;
   }
+deselectAllButton.addEventListener("click", () => {
   columns.forEach((column) => {
     column.included = false;
   });

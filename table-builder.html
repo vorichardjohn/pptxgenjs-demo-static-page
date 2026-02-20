@@ -43,6 +43,12 @@
           </small>
         </div>
         <p>Reorder with drag-and-drop, include/exclude fields, and control widths/alignment.</p>
+        <h2>2) Configure columns</h2>
+        <p>Reorder with drag-and-drop, include/exclude fields, and control widths/alignment.</p>
+        <div class="action-row">
+          <button id="select-all-columns" class="secondary" disabled>Select all columns</button>
+          <button id="deselect-all-columns" class="secondary" disabled>Deselect all columns</button>
+        </div>
         <ul id="column-config" class="column-list"></ul>
       </article>
 
@@ -53,6 +59,7 @@
           <label>File name prefix<input id="file-name" value="pptxgenjs-uploaded-table" /></label>
           <label>Rows per slide<input id="rows-per-slide" type="number" min="5" max="60" step="1" value="20" /></label>
           <label>Preview slide count<input id="preview-slide-count" type="text" inputmode="numeric" value="2" /></label>
+          <label>Preview slide count<input id="preview-slide-count" type="number" min="1" max="20" step="1" value="2" /></label>
 
           <label>Header fill color (hex)<input id="header-fill" value="1D4ED8" /></label>
           <label>Header text color (hex)<input id="header-text" value="FFFFFF" /></label>

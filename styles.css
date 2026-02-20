@@ -77,6 +77,19 @@ header p {
   overflow-x: auto;
 }
 
+
+.include-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0;
+  font-size: 0.85rem;
+}
+
+.overflow-auto {
+  overflow-x: auto;
+}
+
 .action-row {
   display: flex;
   flex-wrap: wrap;
